@@ -6,7 +6,7 @@ class Pokemon < ApplicationRecord
 
   def pokemon_count_valid?
     if self.trainer.pokemons.length >= 6
-      self.errors.add(:max_pokemon, "Too many poke!")
+     # self.errors.add(:max_pokemon, "Too many poke!")
     end
   end
 

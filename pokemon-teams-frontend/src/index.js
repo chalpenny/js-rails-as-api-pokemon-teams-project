@@ -52,11 +52,13 @@ function makeTrainerCard(trainer){
 
         const pokeLi = document.createElement("li")
         pokeLi.innerText = `${pokemon.nickname} (${pokemon.species})` 
+        pokeLi.id = `poke-${pokemon.id}`
 
         const releaseButton = document.createElement("button")
         releaseButton.classList += "release"
         releaseButton.setAttribute("data-pokemon-id", pokemon.id)
         releaseButton.innerText = "Release"
+        releaseButton.addEventListener('click', releasePokemon)
 
         pokeLi.appendChild(releaseButton)
 
@@ -81,9 +83,33 @@ function makeTrainerCard(trainer){
 
         fetch(POKEMONS_URL, configObj)
             .then(function(resp){
+                // if (!resp.ok){
+                //     throw Error(resp.statusText)
+                // }
                 return resp.json()
             })
             .then(function(pokemon){
-                console.log(pokemon)
+                renderPokemon(pokemon)
             })
     }
+
+    function releasePokemon(event){
+        const pokeId = event.target.dataset.pokemonId
+        const configObj = {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        }
+
+        fetch(`${POKEMONS_URL}/${pokeId}`, configObj)
+        .then(function(resp){
+            return resp.json()
+        })
+        .then(function(pokemon){
+            const releasedPoke = document.getElementById(`poke-${pokemon.id}`)
+            releasedPoke.remove()
+        })
+    }
+    

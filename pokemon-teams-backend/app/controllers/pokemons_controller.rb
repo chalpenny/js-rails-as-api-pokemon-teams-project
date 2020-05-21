@@ -11,15 +11,20 @@ class PokemonsController < ApplicationController
     end
 
     def create
-        trainer - Trainer.find_by_id(params["trainerID"])
+        trainer = Trainer.find_by_id(params["trainerID"])
         name = Faker::Name.first_name
         species = Faker::Games::Pokemon.name
         pokemon = trainer.pokemon.build(nickname: name, species: species)
         if pokemon.save
             render json: pokemon
         else
-            render
+            render json: pokemon, status: 500
         end
     end
 
+    def destroy
+        pokemon = Pokemon.find_by(id: params[:id])
+        pokemon.destroy
+        render json: pokemon
+    end
 end
