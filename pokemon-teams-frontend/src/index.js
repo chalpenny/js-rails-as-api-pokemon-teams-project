@@ -32,11 +32,58 @@ function makeTrainerCard(trainer){
     pokeButton.setAttribute("data-trainer-id", trainer.id)
     pokeButton.innerText = "Add Pokemon"
     card.appendChild(pokeButton)
+    pokeButton.addEventListener('click', addPokemon)
 
     const pokeList = document.createElement('ul')
+    pokeList.id = `trainer-${trainer.id}-pokemon`
+
+    card.appendChild(pokeList)
+    main.appendChild(card)
+
     for (const pokemon of trainer.pokemons){
-    console.log(pokemon)
+        renderPokemon(pokemon)
     }
 
-    main.appendChild(card)
+   
+    }
+
+    function renderPokemon(pokemon){
+        const pokeList = document.getElementById(`trainer-${pokemon.trainer_id}-pokemon`)
+
+        const pokeLi = document.createElement("li")
+        pokeLi.innerText = `${pokemon.nickname} (${pokemon.species})` 
+
+        const releaseButton = document.createElement("button")
+        releaseButton.classList += "release"
+        releaseButton.setAttribute("data-pokemon-id", pokemon.id)
+        releaseButton.innerText = "Release"
+
+        pokeLi.appendChild(releaseButton)
+
+        pokeList.appendChild(pokeLi)
+    }
+
+    function addPokemon(event){
+        const trainerId = event.target.dataset.trainerId
+
+        const pokeData = {
+            trainerId: trainerId
+        }
+
+        const configObj = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(pokeData)
+        }
+
+        fetch(POKEMONS_URL, configObj)
+            .then(function(resp){
+                return resp.json()
+            })
+            .then(function(pokemon){
+                console.log(pokemon)
+            })
     }
